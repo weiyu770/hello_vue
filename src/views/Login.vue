@@ -5,16 +5,16 @@ import { ElMessage } from 'element-plus'
 
 //调用后台接口,完成注册
 
-import { userLoginService} from '/src/api/user.js'
+import { userLoginService } from '/src/api/user.js'
 
 const tokenStore = useTokenStore();
-const login =async ()=>{
+const login = async () => {
     //调用接口,完成登录
-    let result =  await userLoginService(registerData.value);
-    if(result.code===0){
-     alert(result.msg? result.msg : '登录成功')
-    }else{
-     alert('登录失败')
+    let result = await userLoginService(registerData.value);
+    if (result.code === 0) {
+        alert(result.msg ? result.msg : '登录成功')
+    } else {
+        alert('登录失败')
     }
     //alert(result.msg? result.msg : '登录成功')
     ElMessage.success(result.msg ? result.msg : '登录成功')
@@ -64,17 +64,17 @@ const rules = {
 //表单数据校验
 //登录函数
 
-import {useRouter} from 'vue-router'
-import {useTokenStore} from "@/stores/token";
+import { useRouter } from 'vue-router'
+import { useTokenStore } from "@/stores/modules/token";
 const router = useRouter()
 
 
 //定义函数,清空数据模型的数据
-const clearRegisterData = ()=>{
-    registerData.value={
-        username:'',
-        password:'',
-        rePassword:''
+const clearRegisterData = () => {
+    registerData.value = {
+        username: '',
+        password: '',
+        rePassword: ''
     }
 }
 
@@ -95,11 +95,11 @@ const clearRegisterData = ()=>{
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input :prefix-icon="Lock" type="password" placeholder="请输入密码"
-                              v-model="registerData.password"></el-input>
+                        v-model="registerData.password"></el-input>
                 </el-form-item>
                 <el-form-item prop="rePassword">
                     <el-input :prefix-icon="Lock" type="password" placeholder="请输入再次密码"
-                              v-model="registerData.rePassword"></el-input>
+                        v-model="registerData.rePassword"></el-input>
                 </el-form-item>
                 <!-- 注册按钮 -->
                 <el-form-item>
@@ -108,7 +108,7 @@ const clearRegisterData = ()=>{
                     </el-button>
                 </el-form-item>
                 <el-form-item class="flex">
-                    <el-link type="info" :underline="false" @click="isRegister = false;clearRegisterData()">
+                    <el-link type="info" :underline="false" @click="isRegister = false; clearRegisterData()">
                         ← 返回
                     </el-link>
                 </el-form-item>
@@ -122,7 +122,8 @@ const clearRegisterData = ()=>{
                     <el-input :prefix-icon="User" placeholder="请输入用户名" v-model="registerData.username"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
-                    <el-input name="password" :prefix-icon="Lock" type="password" placeholder="请输入密码" v-model="registerData.password"></el-input>
+                    <el-input name="password" :prefix-icon="Lock" type="password" placeholder="请输入密码"
+                        v-model="registerData.password"></el-input>
                 </el-form-item>
                 <el-form-item class="flex">
                     <div class="flex">
@@ -135,7 +136,7 @@ const clearRegisterData = ()=>{
                     <el-button class="button" type="primary" auto-insert-space @click="login">登录</el-button>
                 </el-form-item>
                 <el-form-item class="flex">
-                    <el-link type="info" :underline="false" @click="isRegister = true;clearRegisterData()">
+                    <el-link type="info" :underline="false" @click="isRegister = true; clearRegisterData()">
                         注册 →
                     </el-link>
                 </el-form-item>
