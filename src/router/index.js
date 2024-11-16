@@ -1,19 +1,31 @@
 import { createRouter, createWebHistory } from 'vue-router';
-
-// 导入登录组件
+import { ElMessage } from 'element-plus';
 import LoginVue from '@/views/Login.vue';
+import HelloWorld from '@/views/HelloWorld.vue';
+import { useTokenStore } from '@/stores/modules/token';
 
-// 定义路由
 const routes = [
     { path: '/login', component: LoginVue },
-    { path: '/', redirect: '/login' } // 根路径重定向到登录页面
+    { path: '/hello-world', component: HelloWorld },
+    { path: '/', redirect: '/hello-world' }
 ];
 
-// 创建路由器
 const router = createRouter({
     history: createWebHistory(),
-    routes: routes
+    routes
 });
 
-// 导出路由
+// 全局导航守卫：检查是否登录
+router.beforeEach((to, from, next) => {
+    const tokenStore = useTokenStore();
+
+    // 如果用户未登录并且访问的不是登录页面，则重定向到登录页面
+    if (!tokenStore.isLoggedIn() && to.path !== '/login') {
+        ElMessage.warning('未登录 为你跳转到登录页面');
+        next({ path: '/login' });
+    } else {
+        next(); // 已登录，允许访问
+    }
+});
+
 export default router;

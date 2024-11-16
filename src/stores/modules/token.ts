@@ -1,31 +1,29 @@
-//定义store
-import {defineStore} from 'pinia'
-import {ref} from 'vue'
-/* 
-    第一个参数:名字,唯一性
-    第二个参数:函数,函数的内部可以定义状态的所有内容
+// stores/modules/token.js 或 token.ts
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
-    返回值: 函数
-*/
-export const useTokenStore = defineStore('token',()=>{
-    //定义状态的内容
+export const useTokenStore = defineStore('token', () => {
+    const token = ref('');
 
-    //1.响应式变量
-    const token = ref('')
+    const setToken = (newToken: string) => {
+        token.value = newToken;
+    };
 
-    //2.定义一个函数,修改token的值
-    const setToken = (newToken)=>{
-        token.value = newToken
-    }
+    const removeToken = () => {
+        token.value = '';
+    };
 
-    //3.函数,移除token的值
-    const removeToken = ()=>{
-        token.value=''
-    }
+    // 检查是否已登录
+    const isLoggedIn = () => {
+        return !!token.value;  // 如果 token 存在则返回 true
+    };
 
     return {
-        token,setToken,removeToken
-    }
-},{
-    persist:true//持久化存储
+        token,
+        setToken,
+        removeToken,
+        isLoggedIn
+    };
+}, {
+    persist: true
 });
