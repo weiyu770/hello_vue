@@ -64,15 +64,14 @@ const router = createRouter({
 
 // 全局导航守卫：检查是否登录
 router.beforeEach((to, from, next) => {
-    const tokenStore = useTokenStore();
-
-    // 如果用户未登录并且访问的不是登录页面，则重定向到登录页面
-    if (!tokenStore.isLoggedIn() && to.path !== '/login') {
-        ElMessage.warning('未登录，为你跳转到登录页面');
-        next({ path: '/login' });
-    } else {
-        next(); // 已登录，允许访问
-    }
+  const tokenStore = useTokenStore();
+  // 如果用户未登录并且访问的不是登录页面，则重定向到登录页面
+  if (!tokenStore.isLoggedIn() && to.path !== '/login') {
+    ElMessage.warning('未登录，为你跳转到登录页面');
+    next({ path: '/login' }); // 跳转到登录页面
+  } else {
+    next(); // 已登录，允许访问
+  }
 });
 
 export default router;

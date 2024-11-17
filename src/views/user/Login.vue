@@ -3,7 +3,7 @@ import { User, Lock } from '@element-plus/icons-vue';
 import { ref } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useRouter } from 'vue-router';
-import { userLoginService } from '/src/api/user.js';
+import { userLoginService } from '/src/api/user/user.js';
 import { useTokenStore } from '@/stores/modules/token';
 
 // 初始化路由和状态管理

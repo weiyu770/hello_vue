@@ -15,7 +15,7 @@ import {
     articleCategoryUpdateService,
     articleCategoryDeleteService,
     articleCategoryDeleteByIdService
-} from '@/api/category.js'
+} from '@/api/category/category.js'
 
 // 分类数据
 const categorys = ref([]);
