@@ -45,7 +45,7 @@ const login = async () => {
             ElMessage.error('登录失败，未返回有效的 token');
         }
     } catch (error) {
-        ElMessage.error('登录过程中发生异常，请稍后再试');
+        ElMessage.error('登录过程中发生异常，请稍后再试 未开启后端');
     }
 };
 
