@@ -171,7 +171,7 @@ const handleLogout = () => {
             </el-main>
 
             <!-- ======================== 底部区域 ======================== -->
-            <el-footer>后台管理系统 ©2023 Created by 黑马程序员</el-footer>
+            <el-footer>后台管理系统 ©2023 By 韦宇</el-footer>
         </el-container>
     </el-container>
 </template>

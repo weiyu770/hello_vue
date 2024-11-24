@@ -1,12 +1,19 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ElMessage } from 'element-plus';
-import { useTokenStore } from '@/stores/modules/token';
+/**
+ * @description: 请求配置工具
+ * @path: D:\备份\自己用的测试\my-vue\src\utils\request.ts
+ * @author: yu_wei
+ * @create: 2024/11/18 21:05
+ */
+
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import {ElMessage} from 'element-plus';
+import {useTokenStore} from '@/stores/modules/token';
 
 //@ts-ignore
 import router from '@/router';
 
 const baseURL = '/api';
-const instance: AxiosInstance = axios.create({ baseURL });
+const instance: AxiosInstance = axios.create({baseURL});
 
 // 添加请求拦截器
 instance.interceptors.request.use(

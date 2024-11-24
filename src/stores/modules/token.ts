@@ -1,3 +1,10 @@
+/**
+ * @description: Token store
+ * @path: D:\备份\自己用的测试\my-vue\src\stores\modules\token.ts
+ * @author: yu_wei
+ * @create: 2024/11/18 21:05
+ */
+
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
