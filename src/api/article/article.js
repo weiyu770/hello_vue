@@ -198,3 +198,18 @@ export function listArchivedArticles(queryParams) {
         params: queryParams,
     });
 }
+
+
+/**
+ * 取消点赞文章
+ * @param {Number} articleId 文章ID
+ * @returns {Promise}
+ */
+export function unlikeArticle(articleId) {
+    return request({
+        url: `/article/${articleId}/unlike`,
+        method: 'post',
+    });
+}
+
+

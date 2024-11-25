@@ -1,3 +1,8 @@
+我会为你提供完整的代码实现。我将修改之前的文章列表组件，添加点赞功能。
+
+
+
+```vue
 <template>
     <div class="article-list-container">
         <h2>文章列表管理</h2>
@@ -31,18 +36,10 @@
             >
                 批量删除
             </el-button>
-            <el-button
-                type="warning"
-                :icon="Upload"
-                @click="handleImport"
-            >
+            <el-button type="warning" :icon="Upload" @click="handleImport">
                 导入文章
             </el-button>
-            <el-button
-                type="success"
-                :icon="Download"
-                @click="handleExport"
-            >
+            <el-button type="success" :icon="Download" @click="handleExport">
                 导出文章
             </el-button>
         </div>
@@ -72,8 +69,31 @@
                         {{ row.createTime }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="400" align="center" fixed="right">
+                <el-table-column label="点赞数" prop="likeCount" width="100" align="center">
                     <template #default="{ row }">
+                        {{ row.likeCount || 0 }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作" width="500" align="center" fixed="right">
+                    <template #default="{ row }">
+
+                        <el-button
+                            link
+                            type="primary"
+                            @click="handleLike(row)"
+                            :disabled="row.liked"
+                        >
+                            {{ row.liked ? '已点赞' : '点赞' }} ({{ row.likeCount || 0 }})
+                        </el-button>
+                        <el-button
+                            link
+                            :type="row.liked ? 'danger' : 'info'"
+                            @click="handleLikeToggle(row)"
+                            :disabled="!row.liked"
+                        >
+                            {{ row.liked ? '取消点赞' : '取消点赞' }} ({{ row.likeCount || 0 }})
+                        </el-button>
+
                         <el-button
                             link
                             type="primary"
@@ -145,15 +165,15 @@ import {
     Download,
     Edit,
     View,
-    More,
-    ArrowDown
+    More
 } from '@element-plus/icons-vue'
 import {
     listArticleBack,
     deleteArticle,
-    recycleArticle,
     recommendArticle,
-    topArticle
+    topArticle,
+    likeArticle, // 点赞 API
+    unlikeArticle  // 取消点赞 API
 } from '@/api/article/article'
 
 const router = useRouter()
@@ -162,13 +182,13 @@ const articleList = ref([])
 const total = ref(0)
 const selectedIds = ref([])
 const queryForm = ref(null)
-const tableKey = ref(0)  // 用于强制更新表格视图
+const tableKey = ref(0)
 
 // 查询参数
 const queryParams = ref({
     pageNum: 1,
     pageSize: 10,
-    title: undefined, // 使用 title 而不是 keyword
+    title: undefined,
     isDelete: 0,
     articleType: undefined
 })
@@ -177,29 +197,55 @@ const queryParams = ref({
 const getList = async () => {
     try {
         loading.value = true
-        console.log('查询参数:', queryParams.value)
         const { data } = await listArticleBack(queryParams.value)
-        console.log('获取到的数据:', data)
-        // 修改以下行以匹配后端返回的数据格式
         articleList.value = data.recordList || []
         total.value = data.count || 0
-        // 强制触发视图更新
         tableKey.value++
-        console.log('处理后的文章列表:', articleList.value)
     } catch (error) {
         console.error('获取文章列表失败:', error)
         ElMessage.error('获取文章列表失败')
     } finally {
         loading.value = false
-        console.log('loading 状态:', loading.value)
     }
 }
 
-// 格式化时间
-const formatDateTime = (time) => {
-    if (!time) return ''
-    return time // 直接返回时间字符串
+// 点赞功能
+const handleLike = async (row) => {
+    try {
+        await likeArticle(row.id)
+        // 直接更新当前行的点赞数和状态
+        row.likeCount = (row.likeCount || 0) + 1
+        row.liked = true
+        ElMessage.success('点赞成功')
+    } catch (error) {
+        console.error('点赞失败:', error)
+        ElMessage.error('点赞失败')
+    }
 }
+
+// 点赞/取消点赞功能
+const handleLikeToggle = async (row) => {
+    try {
+        if (row.liked) {
+            // 取消点赞
+            await unlikeArticle(row.id)
+            row.likeCount = Math.max(0, (row.likeCount || 1) - 1)
+            row.liked = false
+            ElMessage.success('已取消点赞')
+        } else {
+            // 点赞
+            await likeArticle(row.id)
+            row.likeCount = (row.likeCount || 0) + 1
+            row.liked = true
+            ElMessage.success('点赞成功')
+        }
+    } catch (error) {
+        console.error('点赞/取消点赞失败:', error)
+        ElMessage.error('操作失败')
+    }
+}
+
+
 
 // 查询
 const handleQuery = () => {
@@ -220,7 +266,7 @@ const resetQuery = () => {
 
 // 新增文章
 const handleAdd = () => {
-    router.push('/article/manage/post-article');
+    router.push('/article/manage/post-article')
 }
 
 // 编辑文章
@@ -280,6 +326,7 @@ const handleImport = () => {
 const handleExport = () => {
     ElMessage.info('导出功能开发中...')
 }
+
 // 置顶/取消置顶
 const handleTop = async (row) => {
     try {
@@ -313,20 +360,17 @@ const handleRecommend = async (row) => {
 // 表格选择改变
 const handleSelectionChange = (selection) => {
     selectedIds.value = selection.map(item => item.id)
-    console.log('当前选中的文章ID:', selectedIds.value)
 }
 
 // 每页条数改变
 const handleSizeChange = (val) => {
     queryParams.value.pageSize = val
-    console.log('每页条数更改为:', val)
     getList()
 }
 
 // 页码改变
 const handleCurrentChange = (val) => {
     queryParams.value.pageNum = val
-    console.log('当前页码更改为:', val)
     getList()
 }
 
@@ -370,3 +414,4 @@ onMounted(() => {
     white-space: nowrap;
 }
 </style>
+
