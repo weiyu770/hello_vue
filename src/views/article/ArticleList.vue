@@ -72,44 +72,46 @@
                         {{ row.createTime }}
                     </template>
                 </el-table-column>
-                <el-table-column label="操作" width="280" align="center" fixed="right">
+                <el-table-column label="操作" width="400" align="center" fixed="right">
                     <template #default="{ row }">
-                        <el-button-group>
-                            <el-button
-                                link
-                                type="primary"
-                                :icon="Edit"
-                                @click="handleEdit(row)"
-                            >
-                                编辑
-                            </el-button>
-                            <el-button
-                                link
-                                type="primary"
-                                :icon="View"
-                                @click="handlePreview(row)"
-                            >
-                                预览
-                            </el-button>
-                            <el-dropdown trigger="click">
-                                <el-button link type="primary" :icon="More">
-                                    更多<el-icon class="el-icon--right"><ArrowDown /></el-icon>
-                                </el-button>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item @click="handleTop(row)">
-                                            {{ row.isTop ? '取消置顶' : '置顶' }}
-                                        </el-dropdown-item>
-                                        <el-dropdown-item @click="handleRecommend(row)">
-                                            {{ row.isRecommend ? '取消推荐' : '推荐' }}
-                                        </el-dropdown-item>
-                                        <el-dropdown-item divided @click="handleDelete(row)">
-                                            删除
-                                        </el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown>
-                        </el-button-group>
+                        <el-button
+                            link
+                            type="primary"
+                            @click="handleTop(row)"
+                        >
+                            {{ row.isTop ? '取消置顶' : '置顶' }}
+                        </el-button>
+                        <el-button
+                            link
+                            type="primary"
+                            @click="handleRecommend(row)"
+                        >
+                            {{ row.isRecommend ? '取消推荐' : '推荐' }}
+                        </el-button>
+                        <el-button
+                            link
+                            type="primary"
+                            :icon="Edit"
+                            @click="handleEdit(row)"
+                        >
+                            编辑
+                        </el-button>
+                        <el-button
+                            link
+                            type="primary"
+                            :icon="View"
+                            @click="handlePreview(row)"
+                        >
+                            预览
+                        </el-button>
+                        <el-button
+                            link
+                            type="danger"
+                            :icon="Delete"
+                            @click="handleDelete(row)"
+                        >
+                            删除
+                        </el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -218,7 +220,7 @@ const resetQuery = () => {
 
 // 新增文章
 const handleAdd = () => {
-    router.push('/article/edit')
+    router.push('/article/manage/post-article');
 }
 
 // 编辑文章
@@ -282,8 +284,8 @@ const handleExport = () => {
 const handleTop = async (row) => {
     try {
         await topArticle({
-            articleId: row.id,
-            isTop: row.isTop === 1 ? 0 : 1  // 修改判断逻辑
+            id: row.id,
+            isTop: row.isTop === 1 ? 0 : 1
         })
         ElMessage.success(row.isTop === 1 ? '取消置顶成功' : '置顶成功')
         getList()
@@ -297,8 +299,8 @@ const handleTop = async (row) => {
 const handleRecommend = async (row) => {
     try {
         await recommendArticle({
-            articleId: row.id,
-            isRecommend: row.isRecommend === 1 ? 0 : 1  // 修改判断逻辑
+            id: row.id,
+            isRecommend: row.isRecommend === 1 ? 0 : 1
         })
         ElMessage.success(row.isRecommend === 1 ? '取消推荐成功' : '推荐成功')
         getList()
