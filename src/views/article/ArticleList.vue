@@ -193,14 +193,18 @@ const queryParams = ref({
     articleType: undefined
 })
 
-// 获取文章列表
+// 获取文章列表  listArticleBack
 const getList = async () => {
     try {
         loading.value = true
-        const { data } = await listArticleBack(queryParams.value)
-        articleList.value = data.recordList || []
-        total.value = data.count || 0
-        tableKey.value++
+        const response = await listArticleBack(queryParams.value)
+        if (response.flag && response.code === 200) {
+            articleList.value = response.data.recordList || []
+            total.value = response.data.count || 0
+            tableKey.value++
+        } else {
+            ElMessage.error(response.msg || '获取文章列表失败')
+        }
     } catch (error) {
         console.error('获取文章列表失败:', error)
         ElMessage.error('获取文章列表失败')
@@ -208,6 +212,11 @@ const getList = async () => {
         loading.value = false
     }
 }
+
+
+//分页查询文章列表
+
+
 
 // 点赞功能
 const handleLike = async (row) => {
