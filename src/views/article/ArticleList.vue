@@ -1,8 +1,3 @@
-我会为你提供完整的代码实现。我将修改之前的文章列表组件，添加点赞功能。
-
-
-
-```vue
 <template>
     <div class="article-list-container">
         <h2>文章列表管理</h2>
@@ -76,7 +71,6 @@
                 </el-table-column>
                 <el-table-column label="操作" width="500" align="center" fixed="right">
                     <template #default="{ row }">
-
                         <el-button
                             link
                             type="primary"
@@ -93,7 +87,6 @@
                         >
                             {{ row.liked ? '取消点赞' : '取消点赞' }} ({{ row.likeCount || 0 }})
                         </el-button>
-
                         <el-button
                             link
                             type="primary"
@@ -141,13 +134,15 @@
                 <el-pagination
                     v-model:current-page="queryParams.pageNum"
                     v-model:page-size="queryParams.pageSize"
-                    :page-sizes="[10, 20, 50, 100]"
+                    :page-sizes="[5, 10]"
                     :total="total"
                     layout="total, sizes, prev, pager, next, jumper"
                     @size-change="handleSizeChange"
                     @current-change="handleCurrentChange"
+                    @input="handleJump"
                 />
             </div>
+
         </el-card>
     </div>
 </template>
@@ -172,8 +167,8 @@ import {
     deleteArticle,
     recommendArticle,
     topArticle,
-    likeArticle, // 点赞 API
-    unlikeArticle  // 取消点赞 API
+    likeArticle,
+    unlikeArticle, listArticlesWithPagination
 } from '@/api/article/article'
 
 const router = useRouter()
@@ -193,28 +188,35 @@ const queryParams = ref({
     articleType: undefined
 })
 
-// 获取文章列表  listArticleBack
+// 获取文章列表
+// 获取文章列表
 const getList = async () => {
     try {
-        loading.value = true
-        const response = await listArticleBack(queryParams.value)
+        loading.value = true;
+
+        // 使用后端期望的分页参数名 current 和 size
+        const params = {
+            current: queryParams.value.pageNum,
+            size: queryParams.value.pageSize
+        };
+
+        const response = await listArticlesWithPagination(params);
         if (response.flag && response.code === 200) {
-            articleList.value = response.data.recordList || []
-            total.value = response.data.count || 0
-            tableKey.value++
+            articleList.value = response.data.recordList || [];
+            total.value = response.data.count || 0;
         } else {
-            ElMessage.error(response.msg || '获取文章列表失败')
+            ElMessage.error(response.msg || '获取文章列表失败');
         }
     } catch (error) {
-        console.error('获取文章列表失败:', error)
-        ElMessage.error('获取文章列表失败')
+        console.error('获取文章列表失败:', error);
+        ElMessage.error('获取文章列表失败');
     } finally {
-        loading.value = false
+        loading.value = false;
     }
-}
+};
 
 
-//分页查询文章列表
+
 
 
 
@@ -253,8 +255,6 @@ const handleLikeToggle = async (row) => {
         ElMessage.error('操作失败')
     }
 }
-
-
 
 // 查询
 const handleQuery = () => {
@@ -373,15 +373,16 @@ const handleSelectionChange = (selection) => {
 
 // 每页条数改变
 const handleSizeChange = (val) => {
-    queryParams.value.pageSize = val
-    getList()
-}
+    queryParams.value.pageSize = val;
+    getList();
+};
 
 // 页码改变
 const handleCurrentChange = (val) => {
-    queryParams.value.pageNum = val
-    getList()
-}
+    queryParams.value.pageNum = val;
+    getList();
+};
+
 
 onMounted(() => {
     getList()
@@ -423,4 +424,3 @@ onMounted(() => {
     white-space: nowrap;
 }
 </style>
-
